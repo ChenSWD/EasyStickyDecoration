@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         MyAdapter adapter = new MyAdapter(this, getData());
         mRecyclerView.addItemDecoration(new DividerDecoration(this));
+        // 添加sticky view 管理
         mRecyclerView.addItemDecoration(new LinearStickyDecoration(adapter,
                 new LinearStickyDecoration.IStickyItem<TextView, StickyData>() {
                     @Override

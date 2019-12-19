@@ -52,6 +52,7 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         if (parent.getChildCount() <= 0) return;
         if (!mHasMeasure) {
+            // 在view的draw之前，需要measure&layout
             mHasMeasure = true;
             mLoadEndView.measure(View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(mLoadEndHeight, View.MeasureSpec.EXACTLY));
@@ -71,9 +72,10 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
                 mLoadEndView.draw(c);
                 c.restoreToCount(count);
             } else if (position == (parent.getAdapter().getItemCount() - 1) && !mHasResetDecorInsets) {
+                // 在不满一屏的时候需要减去在getItemOffsets方法中设置的DecorInsetsBottom(mLoadEndHeight)
+                // 修正在不满一屏的情况下可以上下滑动的可能
                 mHasResetDecorInsets = true;
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-                // 在不满一屏的时候需要减去在getItemOffsets方法中设置的DecorInsetsBottom(mLoadEndHeight)
                 setDecorInsetsBottom(params, mDividerHeight);
             }
         }
@@ -85,6 +87,9 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
                                @NonNull RecyclerView.State state) {
         int totalHeight = mDividerHeight;
         int position = parent.getChildLayoutPosition(view);
+        // 由于getItemOffsets方法在view measure之前，所以无法根据子view高度准确计算是否是满屏
+        // 所以不管什么情况，只要是最后一个item，则在该item之后增加一个到底提示高度
+        // 如果实际不满一屏，此时不能让RecyclerView上下可滑动，需要在onDraw方法中进行修正
         if (position == (parent.getAdapter().getItemCount() - 1)) {
             totalHeight += mLoadEndHeight;
             mHasResetDecorInsets = false;
