@@ -1,0 +1,2 @@
+# StickyDecoration
+基于RecyclerView的ItemDecoration实现悬停、分隔线、底部提示的视觉效果
