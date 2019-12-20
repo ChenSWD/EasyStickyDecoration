@@ -37,11 +37,12 @@ public class MainActivity extends Activity {
                         textView.setTextSize(20);
                         textView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                         textView.setTextColor(Color.parseColor("#000000"));
-                        textView.setGravity(Gravity.CENTER);
+                        textView.setGravity(Gravity.CENTER_VERTICAL);
 //                        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                                getResources().getDimensionPixelOffset(R.dimen.sticky_height)));
                         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT));
+                        textView.setPadding(40, 0, 0, 40);
                         return textView;
                     }
 
@@ -76,8 +77,6 @@ public class MainActivity extends Activity {
     }
 
     List<MyData> getData() {
-        data.add(new MyData("星期二", 2));
-        data.add(new MyData("星期三", 3));
         data.add(new MyData("星期四", 4));
         data.add(new MyData("星期五", 5));
         data.add(new MyData("星期六", 6));
@@ -106,9 +105,11 @@ public class MainActivity extends Activity {
         data.add(new MyData("星期五", 5));
         data.add(new MyData("星期六", 6));
         data.add(new MyData("星期日", 7));
-        data.add(new MyData("星期一", 1, "第四周\n第四周\n第四周\n第四周"));
+        data.add(new MyData("星期一", 1, "第四周\n第四周\n第四周"));
         data.add(new MyData("星期二", 2));
         data.add(new MyData("星期三", 3));
+        data.add(new MyData("星期四", 4));
+        data.add(new MyData("星期五", 5));
         return data;
     }
 
