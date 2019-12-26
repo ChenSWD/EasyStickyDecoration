@@ -138,6 +138,8 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
                 }
                 // 第二阶段：绘制悬停视图
                 hasDrawHoverView = true;
+                // 每次绘制悬停视图前先重置拦截事件的区域
+                interceptStickyTouchEvent(parent, 0);
                 StickItemCacheData stickCacheData = currentCacheData;
                 // 获取首个sticky view的top值
                 int currentViewTop = view.getTop() - currentCacheData.height;
@@ -182,12 +184,14 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
                     }
                 }
                 drawStickyView(c, mStickyViewMarginTop);
+                interceptStickyTouchEvent(parent, mStickyView.getHeight() - mStickyViewMarginTop);
             }
         }
         // 处理当前展示的ui中没有sticky view
         if (!hasDrawHoverView && mPreStickyCacheData != null) {
             bindData(mPreStickyCacheData);
             drawStickyView(c, 0);
+            interceptStickyTouchEvent(parent, mStickyView.getHeight());
         }
     }
 
@@ -215,6 +219,15 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
         } else {
             StickItemCacheData cacheData = mStickyData.get(position);
             outRect.set(0, cacheData.height, 0, 0);
+        }
+    }
+
+    /**
+     * 拦截RecyclerView的点击事件，防止sticky view 区域会响应点击事件
+     */
+    private void interceptStickyTouchEvent(RecyclerView parent, int bottom) {
+        if (parent instanceof MyRecyclerView) {
+            ((MyRecyclerView) parent).interceptTouchEvent(new Rect(0, 0, parent.getWidth(), bottom));
         }
     }
 
