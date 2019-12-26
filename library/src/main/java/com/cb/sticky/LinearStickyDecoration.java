@@ -2,7 +2,6 @@ package com.cb.sticky;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -121,6 +120,8 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
         }
         if (parent.getAdapter().getItemCount() <= 0) return;
 //        mLayoutManager = (LinearLayoutManager) parent.getLayoutManager();
+        // 绘制前先重置拦截事件的区域
+        interceptStickyTouchEvent(parent, 0);
         // 是否已经绘制过悬停视图
         boolean hasDrawHoverView = false;
         for (int m = 0, size = parent.getChildCount(); m < size; m++) {
@@ -138,8 +139,6 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
                 }
                 // 第二阶段：绘制悬停视图
                 hasDrawHoverView = true;
-                // 每次绘制悬停视图前先重置拦截事件的区域
-                interceptStickyTouchEvent(parent, 0);
                 StickItemCacheData stickCacheData = currentCacheData;
                 // 获取首个sticky view的top值
                 int currentViewTop = view.getTop() - currentCacheData.height;
@@ -149,7 +148,6 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
                     // 优化：每次都调用obtainHoverData，在position一致的情况下，不需要重复调用
                     if (mPreObtainHoverPosition != position - 1) {
                         mPreObtainHoverPosition = position - 1;
-                        Log.i("chen", "mPreObtainHoverPosition = " + mPreObtainHoverPosition);
                         stickCacheData = new StickItemCacheData();
                         stickCacheData.baseStickyData = mStickyItem.obtainHoverData(mPreObtainHoverPosition);
                         // 数据结构为null，则不绘制
@@ -184,14 +182,14 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
                     }
                 }
                 drawStickyView(c, mStickyViewMarginTop);
-                interceptStickyTouchEvent(parent, mStickyView.getHeight() - mStickyViewMarginTop);
+                interceptStickyTouchEvent(parent, mStickyViewHeight - mStickyViewMarginTop);
             }
         }
         // 处理当前展示的ui中没有sticky view
         if (!hasDrawHoverView && mPreStickyCacheData != null) {
             bindData(mPreStickyCacheData);
             drawStickyView(c, 0);
-            interceptStickyTouchEvent(parent, mStickyView.getHeight());
+            interceptStickyTouchEvent(parent, mStickyViewHeight);
         }
     }
 
